@@ -18,8 +18,11 @@ module.exports = {
     browser: true,
     es2021: true,
   },
+  noInlineConfig: true,
   rules: {
     '@typescript-eslint/no-explicit-any': 2,
     'import/extensions': 0,
+    'class-methods-use-this': 0,
+    'import/prefer-default-export': 0,
   },
 };

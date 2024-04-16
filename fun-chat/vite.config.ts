@@ -1,15 +1,9 @@
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
+  plugins: [tsconfigPaths()],
   base: './',
-  resolve: {
-    alias: {
-      '@assets': resolve(__dirname, './src/assets'),
-      '@components': resolve(__dirname, './src/components'),
-      '@': resolve(__dirname, './src/'),
-    },
-  },
   css: {
     modules: {
       localsConvention: 'camelCase',
