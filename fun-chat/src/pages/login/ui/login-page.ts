@@ -1,13 +1,19 @@
 import { Component } from '@shared/component';
-import { heading } from '@shared/tags';
+import { LoginForm } from '@widgets/login-form';
+import styles from './login-page.module.css';
 
-export default class LoginPage extends Component {
+class LoginPage extends Component {
   constructor() {
-    super({ className: 'about-page' });
+    super({
+      className: styles.loginPage,
+    });
+
     this.render();
   }
 
   render() {
-    this.appendChild(heading({ text: 'Fun Chat Login' }, 1));
+    this.appendChild(new LoginForm());
   }
 }
+
+export default LoginPage;

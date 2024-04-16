@@ -1,14 +1,29 @@
+@import '../node_modules/modern-normalize/modern-normalize.css';
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--main-text-color);
+  background-color: var(--main-bg-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --main-bg-color: #242424;
+  --main-text-color: #ffdaad;
+  --color-10: #3d3d3d;
+  --color-20: #5a5a5a;
+  --color-30: #757575;
+  --color-40: #8f8f8f;
+  --color-50: #a8a8a8;
+  --color-60: #ff981b;
+  --color-70: #f7b565;
+  --color-80: #fcd19e;
+  --color-90: #ffebd2;
+  --error-color: #ff0b0b;
 }
