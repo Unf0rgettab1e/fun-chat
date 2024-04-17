@@ -6,14 +6,6 @@ export class Router {
 
   constructor(config: TRouterConfig) {
     this.config = config;
-
-    window.addEventListener('popstate', () => {
-      // if (!getUserInfo()) {
-      // this.navigate(AppRoutes.LOGIN);
-      // return;
-      // }
-      this.validateCurrentPath();
-    });
   }
 
   setHistory(url: string) {
@@ -29,7 +21,7 @@ export class Router {
   validateCurrentPath = () => {
     const route = Object.entries(this.config).find((r) => r[1].path === window.location.pathname);
     if (route) {
-      this.navigate(route[1].path === AppRoutes.LOGIN ? AppRoutes.HOME : (route[0] as AppRoutes));
+      this.navigate(route[0] === AppRoutes.LOGIN ? AppRoutes.HOME : (route[0] as AppRoutes));
     } else {
       this.config[AppRoutes.NOT_FOUND].component();
     }
