@@ -12,7 +12,7 @@ export const onOpenAuthHandler = (callback: () => void) => {
 
 export const sendUserData = ({ username, password }: { username: string; password: string }) => {
   const userReq = {
-    id: '1',
+    id: crypto.randomUUID(),
     type: UserMessageTypes.LOGIN,
     payload: {
       user: {
