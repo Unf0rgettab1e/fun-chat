@@ -3,20 +3,20 @@ import { div, heading, input } from '@shared/tags';
 import { AppRoutes, Router, getRouter } from '@app/router';
 import styles from './login-form.module.css';
 import { checkValidLogin, checkValidPassword } from '../utils/validation';
-import { storeUserData } from '../utils/storage';
+import { authLogin } from '@/entities/user';
 
 class LoginForm extends Component<HTMLFormElement> {
-  private login: Component<HTMLInputElement> = input({
+  private username: Component<HTMLInputElement> = input({
     type: 'text',
     className: styles.loginFormInput,
-    name: 'Login',
+    name: 'Username',
     placeholder: 'Enter username',
     autocomplete: 'username',
     onInput: () => {
-      if (checkValidLogin(this.login, this.nameError)) {
-        this.login.removeClassName(styles.invalid);
+      if (checkValidLogin(this.username, this.nameError)) {
+        this.username.removeClassName(styles.invalid);
       } else {
-        this.login.addClassName(styles.invalid);
+        this.username.addClassName(styles.invalid);
       }
     },
   });
@@ -64,7 +64,7 @@ class LoginForm extends Component<HTMLFormElement> {
   render() {
     this.appendChildren([
       heading({ text: 'Login here', className: styles.loginFormTitle }, 1),
-      div({ className: styles.loginFormInputContainer }, this.login, this.nameError),
+      div({ className: styles.loginFormInputContainer }, this.username, this.nameError),
       div({ className: styles.loginFormInputContainer }, this.password, this.surnameError),
       this.loginBtn,
     ]);
@@ -79,13 +79,11 @@ class LoginForm extends Component<HTMLFormElement> {
   }
 
   submitHandler() {
-    const nameErr = checkValidLogin(this.login, this.nameError);
+    const nameErr = checkValidLogin(this.username, this.nameError);
     const surnameErr = checkValidPassword(this.password, this.surnameError);
     if (nameErr && surnameErr) {
-      this.router.navigate(AppRoutes.HOME);
-      storeUserData({
-        login: this.login.getNode().value,
-        password: this.password.getNode().value,
+      authLogin(this.username.getNode().value, this.password.getNode().value, () => {
+        this.router.navigate(AppRoutes.HOME);
       });
     }
   }

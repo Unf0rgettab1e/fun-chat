@@ -1,6 +1,8 @@
 import { Component } from '@shared/component';
 import { AppRoutes, Router, getRouter } from './router';
 import { getAboutRoute } from './router/const';
+import './providers/store';
+import { getStoredUserData } from '@/entities/user';
 
 class App extends Component {
   private router: Router = getRouter();
@@ -18,13 +20,10 @@ class App extends Component {
 
   render() {
     document.addEventListener('DOMContentLoaded', () => {
-      if (!sessionStorage.getItem('userData') && window.location.pathname !== getAboutRoute()) {
+      if (!getStoredUserData() && window.location.pathname !== getAboutRoute()) {
         this.router.navigate(AppRoutes.LOGIN);
-        console.log('no user data', window.location.pathname);
-
         return;
       }
-      console.log('user data');
       this.router.validateCurrentPath();
     });
     document.body.append(this.node);
