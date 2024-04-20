@@ -1,6 +1,7 @@
 import { Component } from '@shared/component';
-import { div, heading, input } from '@shared/tags';
+import { button, div, heading, img, input } from '@shared/tags';
 import { AppRoutes, Router, getRouter } from '@app/router';
+import about from '@assets/icons/about.svg';
 import styles from './login-form.module.css';
 import { checkValidLogin, checkValidPassword } from '../utils/validation';
 import { authLogin } from '@/entities/user';
@@ -67,6 +68,14 @@ class LoginForm extends Component<HTMLFormElement> {
       div({ className: styles.loginFormInputContainer }, this.username, this.nameError),
       div({ className: styles.loginFormInputContainer }, this.password, this.surnameError),
       this.loginBtn,
+      button(
+        {
+          className: `about-icon ${styles.aboutBtn}`,
+          title: 'About Fun Chat',
+          onClick: () => getRouter().navigate(AppRoutes.ABOUT),
+        },
+        img({ src: about, alt: 'To About', className: 'icon' })
+      ),
     ]);
     this.setSubmitHandler(this.submitHandler.bind(this));
   }

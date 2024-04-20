@@ -10,6 +10,7 @@
   box-shadow: 2px 2px 10px 2px var(--color-40);
   padding: 50px 60px;
   margin: 40px;
+  position: relative;
 
   @media screen and (max-width: 580px) {
     padding: 20px 36px;
@@ -76,5 +77,11 @@
     @media screen and (max-width: 580px) {
       width: 50%;
     }
+  }
+
+  .about-btn {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
   }
 }

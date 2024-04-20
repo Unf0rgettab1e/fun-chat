@@ -4,6 +4,7 @@ import { authLogout, getUser } from '@entities/user';
 import { AppRoutes } from '@app/router/const';
 import { getRouter } from '@app/router';
 import logout from '@assets/icons/logout.svg';
+import about from '@assets/icons/about.svg';
 import styles from './header.module.css';
 
 export default class Header extends Component<HTMLDivElement> {
@@ -15,7 +16,18 @@ export default class Header extends Component<HTMLDivElement> {
 
   render() {
     this.appendChildren([
-      heading({ text: 'Fun Chat', className: styles.headerTitle }, 1),
+      heading(
+        { text: 'Fun Chat', className: styles.headerTitle },
+        1,
+        button(
+          {
+            className: 'about-icon',
+            title: 'About Fun Chat',
+            onClick: () => getRouter().navigate(AppRoutes.ABOUT),
+          },
+          img({ src: about, alt: 'To About', className: 'icon' })
+        )
+      ),
       div(
         { className: styles.headerLogout, text: getUser().username },
         button(

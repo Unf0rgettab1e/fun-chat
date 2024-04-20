@@ -14,6 +14,9 @@ export const heading = (
   ...children: (Component | HTMLElement | null)[]
 ) => new Component<HTMLHeadingElement>({ tag: `h${level}`, ...props }, ...children);
 
+export const p = (props: TagProps<HTMLParagraphElement>, ...children: (Component | HTMLElement | null)[]) =>
+  new Component<HTMLParagraphElement>({ tag: 'p', ...props }, ...children);
+
 export const img = (props: TagProps<HTMLImageElement>) => new Component<HTMLImageElement>({ tag: 'img', ...props });
 
 export const a = (props: TagProps<HTMLAnchorElement>, ...children: (Component | HTMLElement | null)[]) =>
