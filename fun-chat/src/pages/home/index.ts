@@ -1,3 +1,3 @@
-const LazyHomePage = () => import('./ui/about-page');
+const LazyHomePage = () => import('./ui/home-page');
 
 export { LazyHomePage as HomePage };

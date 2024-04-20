@@ -8,6 +8,7 @@
   color-scheme: light dark;
   color: var(--main-text-color);
   background-color: var(--main-bg-color);
+  background-image: url('/public/bg.svg');
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -26,4 +27,12 @@
   --color-80: #fcd19e;
   --color-90: #ffebd2;
   --error-color: #ff0b0b;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
