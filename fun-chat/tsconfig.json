@@ -20,6 +20,9 @@
       "@shared/*": ["src/shared/*"],
       "@widgets/*": ["src/widgets/*"],
       "@pages/*": ["src/pages/*"],
+      "@entities/*": ["src/entities/*"],
+      "@features/*": ["src/features/*"],
+      "@assets/*": ["src/shared/assets/*"],
       "@/*": ["src/*"]
     }
   },
