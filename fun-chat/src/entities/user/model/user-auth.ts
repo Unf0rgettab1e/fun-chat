@@ -1,5 +1,11 @@
 import { store } from '@app/providers/store';
-import { onOpenAuthHandler, receiveUserData, sendUserData } from './user-api';
+import {
+  onOpenAuthHandler,
+  receiveLoginUser,
+  receiveLogoutUser,
+  loginUserOnServer,
+  logoutUserOnServer,
+} from './user-api';
 import { UserState } from './types/user';
 
 export const initialUserState: UserState = {
@@ -17,7 +23,7 @@ export const getStoredUserData = () => {
   if (userData) {
     const { username, password } = JSON.parse(userData);
     store.setState({ user: { isLoggedIn: true, username, password } });
-    onOpenAuthHandler(() => sendUserData({ username, password }));
+    onOpenAuthHandler(() => loginUserOnServer({ username, password }));
 
     return store.getState().user;
   }
@@ -30,8 +36,8 @@ export const removeStoredUserData = () => {
 };
 
 export const authLogin = (username: string, password: string, callback?: () => void) => {
-  sendUserData({ username, password });
-  receiveUserData(() => {
+  loginUserOnServer({ username, password });
+  receiveLoginUser(() => {
     storeUserData({ username, password });
     store.setState({ user: { isLoggedIn: true, username, password } });
     if (callback) {
@@ -40,9 +46,15 @@ export const authLogin = (username: string, password: string, callback?: () => v
   });
 };
 
-export const authLogout = () => {
-  removeStoredUserData();
-  store.setState({ user: initialUserState });
+export const authLogout = (callback?: () => void) => {
+  logoutUserOnServer();
+  receiveLogoutUser(() => {
+    removeStoredUserData();
+    store.setState({ user: initialUserState });
+    if (callback) {
+      callback();
+    }
+  });
 };
 
 export const isAuth = () => getStoredUserData() !== null;

@@ -1,8 +1,8 @@
 import { store } from '@app/providers/store';
+import { UserRequest } from '@shared/api/types/requests';
+import { ErrorType, UserErrors, UserMessageType } from '@shared/api';
 import modal from '@shared/ui/modal/modal';
-import { UserMessageTypes } from './const/user-const';
-import { UserResponse } from './types/user';
-import { error } from '../ui/auth-error/user-error';
+import { error } from '../ui/auth-error/auth-error';
 
 export const onOpenAuthHandler = (callback: () => void) => {
   store.getState().socket.on('open', () => {
@@ -10,10 +10,37 @@ export const onOpenAuthHandler = (callback: () => void) => {
   });
 };
 
-export const sendUserData = ({ username, password }: { username: string; password: string }) => {
-  const userReq = {
+export const receiveLoginUser = (callback: () => void) => {
+  store.getState().socket.on(UserMessageType.LOGIN, () => {
+    callback();
+  });
+};
+
+export const receiveLogoutUser = (callback: () => void) => {
+  store.getState().socket.on(UserMessageType.LOGOUT, () => {
+    callback();
+  });
+};
+
+export const receiveUserError = () => {
+  store.getState().socket.on(ErrorType.ERROR, (message) => {
+    switch (message.payload.error) {
+      case UserErrors.USER_ALREADY_LOGGED:
+        modal.open(error('User with this login is already authorized!'));
+        break;
+      case UserErrors.INCORRECT_PASSWORD:
+        modal.open(error('Incorrect password!'));
+        break;
+      default:
+        break;
+    }
+  });
+};
+
+export const loginUserOnServer = ({ username, password }: { username: string; password: string }) => {
+  const userReq: UserRequest = {
     id: crypto.randomUUID(),
-    type: UserMessageTypes.LOGIN,
+    type: UserMessageType.LOGIN,
     payload: {
       user: {
         login: username,
@@ -21,20 +48,21 @@ export const sendUserData = ({ username, password }: { username: string; passwor
       },
     },
   };
+  receiveUserError();
   store.getState().socket.sendMessage(userReq);
 };
 
-export const receiveUserData = (callback: () => void) => {
-  store.getState().socket.on('message', (message: UserResponse) => {
-    switch (message.type) {
-      case UserMessageTypes.LOGIN:
-        callback();
-        break;
-      case UserMessageTypes.ERROR:
-        modal.open(error(message.payload.error ?? ''));
-        break;
-      default:
-        break;
-    }
-  });
+export const logoutUserOnServer = () => {
+  const userReq: UserRequest = {
+    id: crypto.randomUUID(),
+    type: UserMessageType.LOGOUT,
+    payload: {
+      user: {
+        login: store.getState().user.username,
+        password: store.getState().user.password,
+      },
+    },
+  };
+  receiveUserError();
+  store.getState().socket.sendMessage(userReq);
 };
