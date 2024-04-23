@@ -5,7 +5,7 @@ import {
   receiveLogoutUser,
   loginUserOnServer,
   logoutUserOnServer,
-} from './user-api';
+} from '../api/user-auth.api';
 import { UserState } from './types/user';
 
 export const initialUserState: UserState = {

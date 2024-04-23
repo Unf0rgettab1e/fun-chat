@@ -1,0 +1,42 @@
+.chat-user {
+  margin: 0;
+  padding: 3px 9px;
+  width: 100%;
+  cursor: pointer;
+
+  position: relative;
+
+  &:hover {
+    background-color: var(--color-40);
+  }
+
+  .chat-user__info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .chat-user__avatar {
+      width: 54px;
+      height: 54px;
+    }
+
+    .chat-user__name {
+      font-size: 18px;
+    }
+
+    .chat-user__status {
+      position: absolute;
+      top: 44px;
+      left: 50px;
+
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--color-50);
+
+      &[data-status='online'] {
+        background-color: var(--online-color);
+      }
+    }
+  }
+}

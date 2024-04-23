@@ -17,20 +17,23 @@
 
   --main-bg-color: #242424;
   --main-text-color: #ffdaad;
-  --color-10: #3d3d3d;
-  --color-20: #5a5a5a;
-  --color-30: #757575;
-  --color-40: #8f8f8f;
-  --color-50: #a8a8a8;
+  --color-10: #333333;
+  --color-20: #444444;
+  --color-30: #5e5e5e;
+  --color-40: #6b6b6b;
+  --color-50: #777777;
   --color-60: #ff981b;
   --color-70: #f7b565;
   --color-80: #fcd19e;
   --color-90: #ffebd2;
   --error-color: #ff0b0b;
+  --online-color: #8774e1;
+  --scroll: rgba(255, 218, 173, 0.5);
 }
 
 .app {
   min-height: 100vh;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -48,4 +51,33 @@
   .icon {
     width: 100%;
   }
+}
+
+.hidden {
+  display: none;
+}
+
+.scrollable {
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--scroll);
+    border-radius: 5px;
+  }
+}
+
+button {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
 }

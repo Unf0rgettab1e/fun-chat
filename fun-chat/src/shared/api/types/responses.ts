@@ -20,7 +20,9 @@ export interface UserResponse extends MessageResponse {
 
 export interface AllUsersResponse extends MessageResponse {
   type: AllUsersMessageType;
-  payload: User[];
+  payload: {
+    users: User[];
+  };
 }
 
 export interface Message {
