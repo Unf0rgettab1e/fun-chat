@@ -1,6 +1,7 @@
 import { Component } from '@shared/component';
 import { div, img, span } from '@shared/tags';
 import avatar from '@shared/assets/icons/user-circle.svg';
+import { SelectUserEvent } from '@entities/user';
 import styles from './chat-user.module.css';
 
 export default class ChatUser extends Component<HTMLLIElement> {
@@ -28,6 +29,7 @@ export default class ChatUser extends Component<HTMLLIElement> {
         this.statusEl
       )
     );
+    this.addSelectUserEvent();
   }
 
   get curStatus() {
@@ -46,5 +48,15 @@ export default class ChatUser extends Component<HTMLLIElement> {
   set curUsername(username: string) {
     this.username = username;
     this.usernameEl.setText(this.username);
+  }
+
+  addSelectUserEvent() {
+    const event = new CustomEvent<SelectUserEvent>('selectUser', {
+      detail: {
+        username: this.username,
+        status: this.status,
+      },
+    });
+    this.node.addEventListener('click', () => document.dispatchEvent(event));
   }
 }

@@ -4,8 +4,9 @@
 
   width: 33%;
   min-height: 100%;
-  max-height: calc(100vh - 100px);
+  max-height: calc(100vh - 110px);
   background-color: var(--color-10);
+  border: 2px solid var(--color-20);
   border-radius: 20px;
 
   .users__search {
@@ -14,8 +15,8 @@
     justify-content: center;
 
     width: 100%;
-    height: 40px;
-    border-radius: 20px;
+    height: 48px;
+    border-radius: 18px;
     border-bottom: 2px solid var(--color-40);
 
     position: relative;
@@ -47,7 +48,7 @@
       width: 100%;
       height: 100%;
       padding: 6px 12px 6px 32px;
-      border-radius: 20px;
+      border-radius: 16px;
       border: 1px solid var(--color-20);
       outline: none;
       background-color: var(--color-20);

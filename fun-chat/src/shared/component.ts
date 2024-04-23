@@ -36,6 +36,15 @@ export class Component<T extends HTMLElement = HTMLElement> {
     }
   }
 
+  insertBefore(child: TChild, before: ChildNode | null) {
+    if (child instanceof Component) {
+      this.node.insertBefore(child.getNode(), before);
+      this.children.push(child);
+    } else {
+      this.node.insertBefore(child, before);
+    }
+  }
+
   appendChildren(children: (TChild | null)[]) {
     children.filter(isNotNullable).forEach((child) => this.appendChild(child));
   }

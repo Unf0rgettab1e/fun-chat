@@ -21,7 +21,7 @@ type MsgSendEvent = {
   [ChatingMessageType.MSG_SEND]: MsgSendingResponse;
 };
 type MsgHistoryEvent = {
-  [ChatingMessageType.MSG_SEND]: MsgHistoryResponse;
+  [ChatingMessageType.MSG_FROM_USER]: MsgHistoryResponse;
 };
 
 type ErrorEvent = {

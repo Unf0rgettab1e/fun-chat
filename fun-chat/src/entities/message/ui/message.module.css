@@ -1,0 +1,79 @@
+.message {
+  border-radius: 20px;
+  padding: 8px 15px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+  &.someone {
+    align-items: flex-start;
+    width: fit-content;
+    max-width: 75%;
+    background-color: var(--color-20);
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      z-index: 0;
+      bottom: 0;
+      left: -7px;
+      height: 14px;
+      width: 14px;
+      border-bottom-right-radius: 15px;
+      border-width: 10px;
+      border-style: solid;
+      border-color: transparent var(--color-20) var(--color-20) transparent;
+    }
+    /* &::after {
+      content: '';
+      position: absolute;
+      z-index: 1;
+      bottom: 0;
+      left: -10px;
+      width: 10px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0);
+      border-radius: 100%;
+      border-bottom-right-radius: 10px;
+    } */
+  }
+
+  &.you {
+    align-items: flex-end;
+    width: fit-content;
+    margin-left: auto;
+    max-width: 75%;
+    background: var(--message-color);
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      z-index: 0;
+      bottom: 0;
+      right: -8px;
+      height: 14px;
+      width: 14px;
+      border-bottom-left-radius: 15px;
+      border-width: 10px;
+      border-style: solid;
+      border-color: transparent transparent var(--message-color) var(--message-color);
+    }
+
+    /* &::after {
+      content: '';
+      position: absolute;
+      z-index: 0;
+      bottom: 0;
+      right: -8px;
+      height: 20px;
+      width: 20px;
+      background: var(--online-color);
+      border-bottom-left-radius: 15px;
+    } */
+  }
+
+  .message__text {
+    margin: 0;
+  }
+}

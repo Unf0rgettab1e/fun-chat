@@ -16,6 +16,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   --main-bg-color: #242424;
+  --main-bg-color-op: rgba(36, 36, 36, 0.5);
   --main-text-color: #ffdaad;
   --color-10: #333333;
   --color-20: #444444;
@@ -28,11 +29,13 @@
   --color-90: #ffebd2;
   --error-color: #ff0b0b;
   --online-color: #8774e1;
+  --message-color: #4e3e9d;
   --scroll: rgba(255, 218, 173, 0.5);
 }
 
 .app {
   min-height: 100vh;
+  overflow: hidden;
 
   display: flex;
   justify-content: center;

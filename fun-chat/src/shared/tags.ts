@@ -31,6 +31,9 @@ export const input = (props: TagProps<HTMLInputElement> & { onInput?: () => void
     },
   });
 
+export const textarea = (props: TagProps<HTMLTextAreaElement>) =>
+  new Component<HTMLTextAreaElement>({ tag: 'textarea', ...props });
+
 export const label = (props: TagProps<HTMLLabelElement>) => new Component<HTMLLabelElement>({ tag: 'label', ...props });
 
 export const button = (props: TagProps<HTMLButtonElement> & { onClick: () => void }, ...children: Component[]) =>
