@@ -43,12 +43,12 @@
       }
 
       &[data-status='online']::after {
-        content: '(online)';
+        content: 'online';
         color: var(--online-color);
       }
 
       &[data-status='offline']::after {
-        content: '(offline)';
+        content: 'offline';
         color: var(--color-50);
       }
     }
