@@ -3,9 +3,17 @@ import { button, div, img, textarea } from '@shared/tags';
 import sendIcon from '@shared/assets/icons/send.svg';
 import avatar from '@shared/assets/icons/user-circle.svg';
 import { assertIsInstance } from '@shared/utils/asserts';
-import { Message, User } from '@shared/api';
-import { SelectUserEvent, getUser } from '@entities/user';
-import { ChatMessage, onMsgHistory, requestCurrentMsgHistory } from '@entities/message';
+import { Message, MsgSendingResponse, User } from '@shared/api';
+import { SelectUserEvent } from '@entities/user';
+import {
+  ChatMessage,
+  offSendMsgByUser,
+  onMsgHistory,
+  onSendMsgByUser,
+  readMsg,
+  requestCurrentMsgHistory,
+  sendMsg,
+} from '@entities/message';
 import styles from './chat.module.css';
 
 declare global {
@@ -45,6 +53,7 @@ export default class Chat extends Component {
       onsubmit: (e) => {
         e.preventDefault();
         this.sendMsgHandler();
+        this.readMsgs();
       },
     },
     this.writeInput,
@@ -52,6 +61,8 @@ export default class Chat extends Component {
   );
 
   private messagesContainer = div({ className: `${styles.messages} scrollable` });
+
+  private separator = div({ className: styles.separator, text: 'Unread messages' });
 
   private member: {
     name: string;
@@ -72,6 +83,15 @@ export default class Chat extends Component {
   );
 
   private noMessages = div({ className: styles.noMessages, text: 'No messages here yet' });
+
+  private unReadedMessages: {
+    msg: Message;
+    component: ChatMessage;
+  }[] = [];
+
+  private isSetReadEvents: boolean = false;
+
+  private currentMemberListener: (msg: MsgSendingResponse) => void = () => {};
 
   constructor() {
     super({ tag: 'section', className: styles.chat });
@@ -127,45 +147,77 @@ export default class Chat extends Component {
       }
     });
 
-    document.addEventListener('selectUser', (event: CustomEvent<SelectUserEvent>) => {
-      const { username, status } = event.detail;
-      this.member = {
-        name: username,
-        status,
-      };
-      this.messagesContainer.destroyChildren();
-      requestCurrentMsgHistory(username);
-      this.memberNameDiv.setText(this.member.name);
-      this.memberNameDiv.getNode().dataset.status = this.member.status ? 'online' : 'offline';
-      this.activateInput();
-      this.deactivateSendBtn();
-    });
+    document.addEventListener('selectUser', (event: CustomEvent<SelectUserEvent>) => this.selectUserHandler(event));
+  }
+
+  selectUserHandler(e: CustomEvent<SelectUserEvent>) {
+    if (this.member.name === e.detail.username) {
+      return;
+    }
+    if (this.member.name) {
+      offSendMsgByUser(this.currentMemberListener);
+    }
+    const { username, status } = e.detail;
+    this.member = {
+      name: username,
+      status,
+    };
+    this.messagesContainer.destroyChildren();
+    requestCurrentMsgHistory(username);
+    this.currentMemberListener = onSendMsgByUser(this.addNewMessage.bind(this), this.member.name);
+    this.memberNameDiv.setText(this.member.name);
+    this.memberNameDiv.getNode().dataset.status = this.member.status ? 'online' : 'offline';
+    this.activateInput();
+    this.deactivateSendBtn();
+    this.setReadMsgsActions();
   }
 
   setHistoryListener() {
     onMsgHistory((messages) => {
-      messages.reverse().forEach((message) => {
-        this.messagesContainer.appendChild(new ChatMessage(message));
-      });
+      if (this.unReadedMessages.length) {
+        this.deleteSeparator();
+        this.unReadedMessages = [];
+      }
       if (!messages.length) {
         this.messagesContainer.appendChild(this.noMessages);
+        return;
       }
-      this.scrollToBottom();
+      messages.reverse().forEach((message) => {
+        this.messagesContainer.appendChild(this.addUnReadedMessage(message));
+      });
+      this.unReadedMessages.reverse();
+      this.scrollToSeparator();
     });
+  }
+
+  addNewMessage(message: Message) {
+    this.noMessages.destroy();
+    this.messagesContainer.insertToStart(this.addUnReadedMessage(message));
+    if (message.from === this.member.name) {
+      this.scrollToSeparator();
+    } else if (message.to === this.member.name) {
+      this.scrollToBottom();
+    }
+  }
+
+  addUnReadedMessage(message: Message) {
+    const component = new ChatMessage(message);
+    if (message.from === this.member.name && !message.status.isReaded) {
+      this.unReadedMessages.push({
+        msg: message,
+        component,
+      });
+    }
+    return component;
   }
 
   sendMsgHandler() {
     this.noMessages.destroy();
-    const message: Message = {
-      id: `MSG_FROM_${Date.now()}`,
-      from: getUser().username,
+    const message = {
       to: this.member.name,
       text: this.writeInput.getNode().value.replace(/\n/g, '<br>'),
-      datetime: Date.now(),
-      status: { isDelivered: false, isReaded: false, isEdited: false },
     };
-    this.messagesContainer.insertBefore(new ChatMessage(message), this.messagesContainer.getNode().firstChild);
-    this.scrollToBottom();
+    sendMsg(message);
   }
 
   resetForm() {
@@ -174,7 +226,16 @@ export default class Chat extends Component {
   }
 
   scrollToBottom() {
-    this.messagesContainer.getNode().scrollTop = this.messagesContainer.getNode().scrollHeight;
+    this.messagesContainer.getChildren()[0].getNode().scrollIntoView({ behavior: 'smooth' });
+  }
+
+  scrollToSeparator() {
+    if (this.unReadedMessages.length) {
+      this.addSeparator();
+      this.separator.getNode().scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      this.scrollToBottom();
+    }
   }
 
   activateInput() {
@@ -187,5 +248,40 @@ export default class Chat extends Component {
 
   deactivateSendBtn() {
     this.sendBtn.getNode().disabled = true;
+  }
+
+  setReadMsgsActions() {
+    if (!this.isSetReadEvents) {
+      this.messagesContainer.getNode().addEventListener('click', () => this.chatClickHandler());
+      this.messagesContainer.getNode().addEventListener('wheel', () => this.chatScrollHandler());
+      onSendMsgByUser(this.addNewMessage.bind(this));
+      this.isSetReadEvents = true;
+    }
+  }
+
+  chatClickHandler() {
+    this.readMsgs();
+  }
+
+  chatScrollHandler() {
+    this.readMsgs();
+  }
+
+  readMsgs() {
+    if (this.unReadedMessages.length) {
+      this.unReadedMessages.forEach((msg) => {
+        readMsg(msg.msg.id);
+      });
+      this.unReadedMessages = [];
+      this.deleteSeparator();
+    }
+  }
+
+  addSeparator() {
+    this.unReadedMessages[0].component.getNode().after(this.separator.getNode());
+  }
+
+  deleteSeparator() {
+    this.messagesContainer.getNode().removeChild(this.separator.getNode());
   }
 }

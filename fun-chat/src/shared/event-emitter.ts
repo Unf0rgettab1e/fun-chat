@@ -27,4 +27,8 @@ export class EventEmitter<Events extends EventRecord> {
     }
     this.listeners[event]?.forEach((listener) => listener(data));
   }
+
+  getListeners<Event extends keyof Events>(event: Event): Listener<Events[Event]>[] | undefined {
+    return this.listeners[event];
+  }
 }

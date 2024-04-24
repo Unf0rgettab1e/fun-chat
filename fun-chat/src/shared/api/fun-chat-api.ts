@@ -3,11 +3,21 @@ import {
   AllUsersResponse,
   ErrorResponse,
   MessageResponse,
+  MsgDeleteResponse,
+  MsgDeliveredResponse,
+  MsgEditResponse,
   MsgHistoryResponse,
+  MsgReadResponse,
   MsgSendingResponse,
   UserResponse,
 } from './types/responses';
-import { AllUsersMessageType, ChatingMessageType, ErrorType, UserMessageType } from './const/message-types';
+import {
+  AllUsersMessageType,
+  ChatingMessageType,
+  ErrorType,
+  StatusMessageType,
+  UserMessageType,
+} from './const/message-types';
 
 type UserEvents = {
   [key in UserMessageType]: UserResponse;
@@ -24,6 +34,22 @@ type MsgHistoryEvent = {
   [ChatingMessageType.MSG_FROM_USER]: MsgHistoryResponse;
 };
 
+type MsgDelivered = {
+  [StatusMessageType.MSG_DELIVER]: MsgDeliveredResponse;
+};
+
+type MsgReaded = {
+  [StatusMessageType.MSG_READ]: MsgReadResponse;
+};
+
+type MsgEdited = {
+  [StatusMessageType.MSG_EDIT]: MsgEditResponse;
+};
+
+type MsgDeleted = {
+  [StatusMessageType.MSG_DELETE]: MsgDeleteResponse;
+};
+
 type ErrorEvent = {
   [key in ErrorType]: ErrorResponse;
 };
@@ -33,6 +59,10 @@ type ChatClientEvents = EventRecord &
   AllUsersEvents &
   MsgSendEvent &
   MsgHistoryEvent &
+  MsgDelivered &
+  MsgReaded &
+  MsgEdited &
+  MsgDeleted &
   ErrorEvent & {
     open: null;
     close: null;

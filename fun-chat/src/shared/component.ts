@@ -36,12 +36,12 @@ export class Component<T extends HTMLElement = HTMLElement> {
     }
   }
 
-  insertBefore(child: TChild, before: ChildNode | null) {
+  insertToStart(child: TChild) {
     if (child instanceof Component) {
-      this.node.insertBefore(child.getNode(), before);
-      this.children.push(child);
+      this.node.insertBefore(child.getNode(), this.node.firstChild);
+      this.children.unshift(child);
     } else {
-      this.node.insertBefore(child, before);
+      this.node.insertBefore(child, this.node.firstChild);
     }
   }
 
