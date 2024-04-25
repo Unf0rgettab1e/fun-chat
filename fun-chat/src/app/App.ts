@@ -1,6 +1,6 @@
 import { Component } from '@shared/component';
 import { ChatClient } from '@shared/api';
-import { EditMsgEvent, UpdateUnreadEvent } from '@entities/message';
+import { DeleteMsgEvent, EditMsgEvent, UpdateUnreadEvent } from '@entities/message';
 import { div } from '@shared/tags';
 import Loader from '@shared/ui/loader/loader';
 import Modal from '@shared/ui/modal/modal';
@@ -17,6 +17,7 @@ declare global {
     dispatchEvent(event: CustomEvent<EditMsgEvent>): boolean;
     dispatchEvent(event: CustomEvent<UpdateUnreadEvent>): boolean;
     dispatchEvent(event: CustomEvent<ReconnectEvent>): boolean;
+    dispatchEvent(event: CustomEvent<DeleteMsgEvent>): boolean;
     addEventListener(
       type: 'selectUser',
       listener: (event: CustomEvent<SelectUserEvent>) => void,
@@ -30,6 +31,11 @@ declare global {
     addEventListener(
       type: 'updateUnread',
       listener: (event: CustomEvent<UpdateUnreadEvent>) => void,
+      options?: boolean | AddEventListenerOptions
+    ): void;
+    addEventListener(
+      type: 'messageDeleted',
+      listener: (event: CustomEvent<DeleteMsgEvent>) => void,
       options?: boolean | AddEventListenerOptions
     ): void;
     addEventListener(

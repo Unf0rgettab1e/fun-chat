@@ -7,6 +7,7 @@ import { Message, MsgSendingResponse, User } from '@shared/api';
 import { SelectUserEvent } from '@entities/user';
 import {
   ChatMessage,
+  DeleteMsgEvent,
   EditMsgEvent,
   UpdateUnreadEvent,
   getHistory,
@@ -156,6 +157,9 @@ export default class Chat extends Component {
     onUsersLogout((user) => this.currentMemberStatusHandler(user));
     document.addEventListener('selectUser', (event: CustomEvent<SelectUserEvent>) => this.selectUserHandler(event));
     document.addEventListener('editMessage', (event: CustomEvent<EditMsgEvent>) => this.editMessageHandler(event));
+    document.addEventListener('messageDeleted', (event: CustomEvent<DeleteMsgEvent>) =>
+      this.messageDeletedHandler(event)
+    );
   }
 
   currentMemberStatusHandler(user: User) {
@@ -195,6 +199,23 @@ export default class Chat extends Component {
     this.writeInput.getNode().focus();
     this.autoResize(this.writeInput.getNode());
     this.deactivateSendBtn();
+  }
+
+  messageDeletedHandler(e: CustomEvent<DeleteMsgEvent>) {
+    const { msgId } = e.detail;
+    const index = this.unReadedMessages.findIndex((msg) => msg.msg.id === msgId);
+    if (index !== -1) {
+      this.unReadedMessages.splice(index, 1);
+      if (!this.unReadedMessages.length) {
+        this.deleteSeparator();
+      }
+      if (!this.messagesContainer.getNode().children.length) {
+        console.log(this.messagesContainer.getChildren());
+
+        this.messagesContainer.appendChild(this.noMessages);
+      }
+      this.dispatchUnreadMessages();
+    }
   }
 
   setHistoryListener() {

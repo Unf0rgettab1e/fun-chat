@@ -11,7 +11,7 @@ import ContextMenu from '@shared/ui/context-menu/context-menu';
 import styles from './message.module.css';
 import { formatDate } from '../utils/format';
 import { deleteMsg, editMsg, onMsgDeleted, onMsgDelivered, onMsgEdited, onMsgReaded } from '../api/chatting.api';
-import { EditMsgEvent } from '../model/types/events';
+import { DeleteMsgEvent, EditMsgEvent } from '../model/types/events';
 
 export default class ChatMessage extends Component {
   private message: Message;
@@ -130,6 +130,12 @@ export default class ChatMessage extends Component {
     }, this.message.id);
     onMsgDeleted(() => {
       this.destroy();
+      const event = new CustomEvent<DeleteMsgEvent>('messageDeleted', {
+        detail: {
+          msgId: this.message.id,
+        },
+      });
+      document.dispatchEvent(event);
     }, this.message.id);
   }
 
