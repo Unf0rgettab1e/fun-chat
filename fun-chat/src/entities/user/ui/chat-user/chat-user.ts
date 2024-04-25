@@ -2,7 +2,7 @@ import { Component } from '@shared/component';
 import { div, img, span } from '@shared/tags';
 import avatar from '@shared/assets/icons/user-circle.svg';
 import { SelectUserEvent } from '@entities/user';
-import { UpdateUnreadEvent, getHistory, onMsgHistoryByUser } from '@entities/message';
+import { UpdateUnreadEvent, getHistory, onMsgHistoryByUser, onSendMsgByUser } from '@entities/message';
 import styles from './chat-user.module.css';
 
 export default class ChatUser extends Component<HTMLLIElement> {
@@ -45,6 +45,9 @@ export default class ChatUser extends Component<HTMLLIElement> {
         this.setUnreadCounter(event.detail.count);
       }
     });
+    onSendMsgByUser(() => {
+      this.setUnreadCounter(this.unreadCounter + 1);
+    }, this.username);
   }
 
   get curStatus() {
