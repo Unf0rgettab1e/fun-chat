@@ -8,6 +8,48 @@
   background-color: var(--color-10);
   border: 2px solid var(--color-20);
   border-radius: 20px;
+  transition: all 0.5s ease-in-out;
+
+  .trigger {
+    display: none;
+    transition: all 0.8s linear;
+  }
+
+  @media screen and (max-width: 616px) {
+    position: absolute;
+    left: -50%;
+    z-index: 11;
+
+    &.show {
+      left: 4px;
+      width: 70%;
+
+      @media screen and (max-width: 420px) {
+        width: 80%;
+      }
+
+      .trigger {
+        position: absolute;
+        left: auto;
+        right: -10px;
+        transform: scale(-1, 1) translateY(-50%);
+      }
+    }
+
+    .trigger {
+      position: fixed;
+      top: 50%;
+      left: 2px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      width: 20px;
+      height: 66px;
+      background-color: var(--main-text-color);
+      clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%);
+      display: flex;
+      justify-content: center;
+    }
+  }
 
   .users__search {
     display: flex;

@@ -1,5 +1,5 @@
 import { Component } from '@shared/component';
-import { button, img, input } from '@shared/tags';
+import { button, img, input, span } from '@shared/tags';
 import { ChatUser, getAllUsers, onUpdateUsers, requestAllUsers } from '@entities/user';
 import searchIcon from '@shared/assets/icons/search.svg';
 import clearIcon from '@shared/assets/icons/clear.svg';
@@ -43,6 +43,8 @@ export default class ChatUsers extends Component {
 
   private userList = new Component<HTMLUListElement>({ tag: 'ul', className: `${styles.usersList} scrollable` });
 
+  private trigger = span({ className: styles.trigger, onclick: () => this.triggerHandler() });
+
   constructor() {
     super({ tag: 'section', className: styles.users });
 
@@ -65,8 +67,13 @@ export default class ChatUsers extends Component {
         }
       }
     });
+    document.addEventListener('selectUser', () => {
+      this.trigger.removeClassName('hidden');
+      this.removeClassName(styles.show);
+      document.removeEventListener('click', this.hideUsers);
+    });
 
-    this.appendChildren([this.search, this.userList]);
+    this.appendChildren([this.search, this.userList, this.trigger]);
   }
 
   searchUsersHandler(name: string) {
@@ -82,4 +89,16 @@ export default class ChatUsers extends Component {
       }
     });
   }
+
+  triggerHandler() {
+    this.toggleClassName(styles.show);
+    document.addEventListener('click', this.hideUsers);
+  }
+
+  hideUsers = (e: Event) => {
+    if (e.target !== this.node && e.target !== this.trigger.getNode() && !this.node.contains(e.target)) {
+      this.removeClassName(styles.show);
+      document.removeEventListener('click', this.hideUsers);
+    }
+  };
 }

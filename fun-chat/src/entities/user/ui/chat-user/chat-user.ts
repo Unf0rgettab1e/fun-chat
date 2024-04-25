@@ -76,6 +76,13 @@ export default class ChatUser extends Component<HTMLLIElement> {
       },
     });
     this.node.addEventListener('click', () => document.dispatchEvent(event));
+    document.addEventListener('selectUser', (e: CustomEvent<SelectUserEvent>) => {
+      if (e.detail.username === this.username) {
+        this.node.dataset.selected = 'true';
+      } else {
+        this.node.dataset.selected = 'false';
+      }
+    });
   }
 
   setUnreadCounter(count: number) {

@@ -12,6 +12,7 @@ class LoginForm extends Component<HTMLFormElement> {
     className: styles.loginFormInput,
     name: 'Username',
     placeholder: 'Enter username',
+    maxLength: 18,
     autocomplete: 'username',
     onInput: () => {
       if (checkValidLogin(this.username, this.nameError)) {

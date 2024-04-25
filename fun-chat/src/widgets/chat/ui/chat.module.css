@@ -9,6 +9,11 @@
   border-radius: 20px;
   background-color: var(--main-bg-color-op);
 
+  @media screen and (max-width: 616px) {
+    width: 100%;
+    margin: 0 4px 0 10px;
+  }
+
   .member__info {
     display: flex;
     align-items: center;

@@ -182,7 +182,7 @@ export default class Chat extends Component {
     this.memberNameDiv.setText(this.member.name);
     this.memberNameDiv.getNode().dataset.status = this.member.status ? 'online' : 'offline';
     this.activateInput();
-    this.deactivateSendBtn();
+    this.resetForm();
     this.setReadMsgsActions();
   }
 
