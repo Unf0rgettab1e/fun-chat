@@ -16,6 +16,7 @@ import {
   readMsg,
   sendMsg,
 } from '@entities/message';
+import { onUsersLogin, onUsersLogout } from '@entities/user/api/all-users.api';
 import styles from './chat.module.css';
 
 declare global {
@@ -173,9 +174,17 @@ export default class Chat extends Component {
         }
       }
     });
-
+    onUsersLogin((user) => this.currentMemberStatusHandler(user));
+    onUsersLogout((user) => this.currentMemberStatusHandler(user));
     document.addEventListener('selectUser', (event: CustomEvent<SelectUserEvent>) => this.selectUserHandler(event));
     document.addEventListener('editMessage', (event: CustomEvent<EditMsgEvent>) => this.editMessageHandler(event));
+  }
+
+  currentMemberStatusHandler(user: User) {
+    if (this.member.name === user.login) {
+      this.member.status = user.isLogined;
+      this.memberNameDiv.getNode().dataset.status = this.member.status ? 'online' : 'offline';
+    }
   }
 
   selectUserHandler(e: CustomEvent<SelectUserEvent>) {
