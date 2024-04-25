@@ -8,11 +8,12 @@ import { SelectUserEvent } from '@entities/user';
 import {
   ChatMessage,
   EditMsgEvent,
+  UpdateUnreadEvent,
+  getHistory,
   offSendMsgByUser,
   onMsgHistory,
   onSendMsgByUser,
   readMsg,
-  requestCurrentMsgHistory,
   sendMsg,
 } from '@entities/message';
 import styles from './chat.module.css';
@@ -21,6 +22,7 @@ declare global {
   interface Document {
     dispatchEvent(event: CustomEvent<SelectUserEvent>): boolean;
     dispatchEvent(event: CustomEvent<EditMsgEvent>): boolean;
+    dispatchEvent(event: CustomEvent<UpdateUnreadEvent>): boolean;
     addEventListener(
       type: 'selectUser',
       listener: (event: CustomEvent<SelectUserEvent>) => void,
@@ -29,6 +31,11 @@ declare global {
     addEventListener(
       type: 'editMessage',
       listener: (event: CustomEvent<EditMsgEvent>) => void,
+      options?: boolean | AddEventListenerOptions
+    ): void;
+    addEventListener(
+      type: 'updateUnread',
+      listener: (event: CustomEvent<UpdateUnreadEvent>) => void,
       options?: boolean | AddEventListenerOptions
     ): void;
   }
@@ -184,7 +191,7 @@ export default class Chat extends Component {
       status,
     };
     this.messagesContainer.destroyChildren();
-    requestCurrentMsgHistory(username);
+    getHistory(username, true);
     this.currentMemberListener = onSendMsgByUser(this.addNewMessage.bind(this), this.member.name);
     this.memberNameDiv.setText(this.member.name);
     this.memberNameDiv.getNode().dataset.status = this.member.status ? 'online' : 'offline';
@@ -226,9 +233,20 @@ export default class Chat extends Component {
     this.messagesContainer.insertToStart(this.addUnReadedMessage(message));
     if (message.from === this.member.name) {
       this.scrollToSeparator();
+      this.dispatchUnreadMessages();
     } else if (message.to === this.member.name) {
       this.scrollToBottom();
     }
+  }
+
+  dispatchUnreadMessages() {
+    const event = new CustomEvent<UpdateUnreadEvent>('updateUnread', {
+      detail: {
+        count: this.unReadedMessages.length,
+        username: this.member.name,
+      },
+    });
+    document.dispatchEvent(event);
   }
 
   addUnReadedMessage(message: Message) {
@@ -305,6 +323,7 @@ export default class Chat extends Component {
         readMsg(msg.msg.id);
       });
       this.unReadedMessages = [];
+      this.dispatchUnreadMessages();
       this.deleteSeparator();
     }
   }

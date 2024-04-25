@@ -2,10 +2,15 @@ import { Component } from '@shared/component';
 import { div, img, span } from '@shared/tags';
 import avatar from '@shared/assets/icons/user-circle.svg';
 import { SelectUserEvent } from '@entities/user';
+import { UpdateUnreadEvent, getHistory, onMsgHistoryByUser } from '@entities/message';
 import styles from './chat-user.module.css';
 
 export default class ChatUser extends Component<HTMLLIElement> {
   private statusEl = span({ className: styles.chatUserStatus });
+
+  private unread = span({ className: styles.chatUserUnread });
+
+  private unreadCounter = 0;
 
   private usernameEl = span({ className: styles.chatUserName });
 
@@ -21,15 +26,25 @@ export default class ChatUser extends Component<HTMLLIElement> {
     this.destroyChildren();
     this.statusEl.getNode().dataset.status = this.status ? 'online' : 'offline';
     this.usernameEl.setText(this.username);
-    this.appendChild(
+    this.appendChildren([
       div(
         { className: styles.chatUserInfo },
         img({ className: styles.chatUserAvatar, src: avatar }),
         this.usernameEl,
         this.statusEl
-      )
-    );
+      ),
+      this.unread,
+    ]);
     this.addSelectUserEvent();
+    getHistory(this.username);
+    onMsgHistoryByUser((messages) => {
+      this.setUnreadCounter(messages.filter((msg) => msg.from === this.username && !msg.status.isReaded).length);
+    }, this.username);
+    document.addEventListener('updateUnread', (event: CustomEvent<UpdateUnreadEvent>) => {
+      if (event.detail.username === this.username) {
+        this.setUnreadCounter(event.detail.count);
+      }
+    });
   }
 
   get curStatus() {
@@ -58,5 +73,15 @@ export default class ChatUser extends Component<HTMLLIElement> {
       },
     });
     this.node.addEventListener('click', () => document.dispatchEvent(event));
+  }
+
+  setUnreadCounter(count: number) {
+    this.unreadCounter = count;
+    if (this.unreadCounter > 0) {
+      this.unread.setText(this.unreadCounter.toString());
+      this.unread.removeClassName('hidden');
+    } else {
+      this.unread.addClassName('hidden');
+    }
   }
 }
