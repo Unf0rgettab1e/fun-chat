@@ -70,7 +70,7 @@ export default class Chat extends Component {
     status: false,
   };
 
-  private memberNameDiv = div({ className: styles.memberName, text: 'Pick partner to start chatting' });
+  private memberNameDiv = div({ className: styles.memberName, text: 'Select partner to start chatting' });
 
   private chatMemberInfo = div(
     {
@@ -107,6 +107,7 @@ export default class Chat extends Component {
 
   render() {
     this.appendChildren([this.chatMemberInfo, this.messagesContainer, this.sendMessageForm]);
+    this.messagesContainer.appendChild(div({ className: styles.noMessages, text: 'Select partner to start chatting' }));
     this.setEventHandlers();
     this.setHistoryListener();
   }

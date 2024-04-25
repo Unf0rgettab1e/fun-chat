@@ -96,7 +96,7 @@ export default class ChatUsers extends Component {
   }
 
   hideUsers = (e: Event) => {
-    if (e.target !== this.node && e.target !== this.trigger.getNode() && !this.node.contains(e.target)) {
+    if (e.target !== this.node && e.target !== this.trigger.getNode() && !this.node.contains(e.target as Node)) {
       this.removeClassName(styles.show);
       document.removeEventListener('click', this.hideUsers);
     }
