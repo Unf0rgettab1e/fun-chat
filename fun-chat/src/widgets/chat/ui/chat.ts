@@ -7,6 +7,7 @@ import { Message, MsgSendingResponse, User } from '@shared/api';
 import { SelectUserEvent } from '@entities/user';
 import {
   ChatMessage,
+  EditMsgEvent,
   offSendMsgByUser,
   onMsgHistory,
   onSendMsgByUser,
@@ -19,9 +20,15 @@ import styles from './chat.module.css';
 declare global {
   interface Document {
     dispatchEvent(event: CustomEvent<SelectUserEvent>): boolean;
+    dispatchEvent(event: CustomEvent<EditMsgEvent>): boolean;
     addEventListener(
       type: 'selectUser',
       listener: (event: CustomEvent<SelectUserEvent>) => void,
+      options?: boolean | AddEventListenerOptions
+    ): void;
+    addEventListener(
+      type: 'editMessage',
+      listener: (event: CustomEvent<EditMsgEvent>) => void,
       options?: boolean | AddEventListenerOptions
     ): void;
   }
@@ -52,8 +59,14 @@ export default class Chat extends Component {
       className: styles.sendForm,
       onsubmit: (e) => {
         e.preventDefault();
-        this.sendMsgHandler();
+        if (this.editable.isEditMode) {
+          this.editable.message?.editMsgText(this.writeInput.getNode().value.replace(/\n/g, '<br>'));
+          this.editable = { isEditMode: false, message: null };
+        } else {
+          this.sendMsgHandler();
+        }
         this.readMsgs();
+        this.resetForm();
       },
     },
     this.writeInput,
@@ -93,6 +106,14 @@ export default class Chat extends Component {
 
   private currentMemberListener: (msg: MsgSendingResponse) => void = () => {};
 
+  private editable: {
+    message: ChatMessage | null;
+    isEditMode: boolean;
+  } = {
+    message: null,
+    isEditMode: false,
+  };
+
   constructor() {
     super({ tag: 'section', className: styles.chat });
 
@@ -108,9 +129,9 @@ export default class Chat extends Component {
   autoResize(element: HTMLTextAreaElement) {
     const taEl = element;
     taEl.style.height = 'auto';
-    taEl.style.height = `${taEl.scrollHeight}px`;
+    taEl.style.height = `${taEl.scrollHeight + 2}px`;
     if (!element.value) {
-      taEl.style.height = '48px';
+      taEl.style.height = 'auto';
     }
     this.writeInput.getNode().style.maxHeight = '100px';
   }
@@ -142,12 +163,12 @@ export default class Chat extends Component {
 
         if (this.writeInput.getNode().value.trim()) {
           this.sendMessageForm.getNode().requestSubmit();
-          this.resetForm();
         }
       }
     });
 
     document.addEventListener('selectUser', (event: CustomEvent<SelectUserEvent>) => this.selectUserHandler(event));
+    document.addEventListener('editMessage', (event: CustomEvent<EditMsgEvent>) => this.editMessageHandler(event));
   }
 
   selectUserHandler(e: CustomEvent<SelectUserEvent>) {
@@ -170,6 +191,16 @@ export default class Chat extends Component {
     this.activateInput();
     this.deactivateSendBtn();
     this.setReadMsgsActions();
+  }
+
+  editMessageHandler(e: CustomEvent<EditMsgEvent>) {
+    const { message } = e.detail;
+    this.editable.isEditMode = true;
+    this.editable.message = message;
+    this.writeInput.getNode().value = message.getText().replace(/<br>/g, '\n');
+    this.writeInput.getNode().focus();
+    this.autoResize(this.writeInput.getNode());
+    this.deactivateSendBtn();
   }
 
   setHistoryListener() {
@@ -223,6 +254,7 @@ export default class Chat extends Component {
   resetForm() {
     this.writeInput.getNode().value = '';
     this.autoResize(this.writeInput.getNode());
+    this.deactivateSendBtn();
   }
 
   scrollToBottom() {

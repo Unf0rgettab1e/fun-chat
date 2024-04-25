@@ -2,13 +2,14 @@ import {
   ChatingMessageType,
   Message,
   MsgActionRequest,
+  MsgEditRequest,
   MsgSendingRequest,
   MsgSendingResponse,
   StatusMessageType,
 } from '@shared/api';
 import { store } from '@app/providers/store';
 import { getUser } from '@entities/user';
-import { MessageIdPrefix } from '../const';
+import { MessageIdPrefix } from '../model/const';
 
 export const sendMsg = ({ to, text }: { to: string; text: string }) => {
   const sendReq: MsgSendingRequest = {
@@ -66,12 +67,39 @@ export const onMsgReaded = (callback: () => void, msgID: string) => {
   });
 };
 
-export const onMsgEdited = (callback: () => void, msgID: string) => {
+export const editMsg = (id: string, text: string) => {
+  const sendReq: MsgEditRequest = {
+    id: crypto.randomUUID(),
+    type: StatusMessageType.MSG_EDIT,
+    payload: {
+      message: {
+        id,
+        text,
+      },
+    },
+  };
+  store.getState().socket.sendMessage(sendReq);
+};
+
+export const onMsgEdited = (callback: (test: string) => void, msgID: string) => {
   store.getState().socket.on(StatusMessageType.MSG_EDIT, (message) => {
     if (message.payload.message.id === msgID && message.payload.message.status.isEdited) {
-      callback();
+      callback(message.payload.message.text);
     }
   });
+};
+
+export const deleteMsg = (id: string) => {
+  const sendReq: MsgActionRequest = {
+    id: crypto.randomUUID(),
+    type: StatusMessageType.MSG_DELETE,
+    payload: {
+      message: {
+        id,
+      },
+    },
+  };
+  store.getState().socket.sendMessage(sendReq);
 };
 
 export const onMsgDeleted = (callback: () => void, msgID: string) => {

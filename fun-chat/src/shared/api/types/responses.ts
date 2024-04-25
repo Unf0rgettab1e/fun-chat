@@ -76,7 +76,7 @@ export interface MsgReadResponse extends MessageResponse {
 export interface MsgEditResponse extends MessageResponse {
   type: StatusMessageType.MSG_EDIT;
   payload: {
-    message: Pick<Message, 'id'> & {
+    message: Pick<Message, 'id' | 'text'> & {
       status: Pick<Status, 'isEdited'>;
     };
   };

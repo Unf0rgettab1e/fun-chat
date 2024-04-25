@@ -45,6 +45,7 @@
     max-width: 75%;
     background: var(--message-color);
     position: relative;
+    cursor: pointer;
 
     &::before {
       content: '';
@@ -112,5 +113,34 @@
       width: 20px;
       height: 20px;
     }
+  }
+}
+
+.context-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-40);
+  }
+}
+
+.context-menu__icon {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+.context-menu__text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--main-text-color);
+
+  &.delete {
+    color: var(--error-color);
   }
 }
