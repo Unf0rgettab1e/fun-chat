@@ -1,7 +1,7 @@
 import { store } from '@app/providers/store';
 import { UserRequest } from '@shared/api/types/requests';
 import { ErrorType, UserErrors, UserMessageType } from '@shared/api';
-import modal from '@shared/ui/modal/modal';
+import Modal from '@shared/ui/modal/modal';
 import { error } from '../ui/auth-error/auth-error';
 
 export const onOpenAuthHandler = (callback: () => void) => {
@@ -26,10 +26,10 @@ export const receiveUserError = () => {
   store.getState().socket.on(ErrorType.ERROR, (message) => {
     switch (message.payload.error) {
       case UserErrors.USER_ALREADY_LOGGED:
-        modal.open(error('User with this login is already authorized!'));
+        new Modal().open(error('Oops, error...', 'User with this login is already authorized!'));
         break;
       case UserErrors.INCORRECT_PASSWORD:
-        modal.open(error('Incorrect password!'));
+        new Modal().open(error('Oops, error...', 'Incorrect password!'));
         break;
       default:
         break;

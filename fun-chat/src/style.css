@@ -84,3 +84,10 @@ button {
   background-color: transparent;
   cursor: pointer;
 }
+
+.reconnect {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

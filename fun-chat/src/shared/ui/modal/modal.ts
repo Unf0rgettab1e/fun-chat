@@ -6,12 +6,14 @@ import styles from './modal.module.css';
 class Modal extends Component<HTMLDivElement> {
   private window = div({ className: styles.modalWindow });
 
-  constructor() {
+  constructor(private isClosable: boolean = true) {
     super({ className: `${styles.modalWrapper}` });
-    this.node.addEventListener('click', this.clickHandler);
+    if (isClosable) {
+      this.node.addEventListener('click', this.clickHandler);
+    }
   }
 
-  private close = () => {
+  public close = () => {
     this.destroy();
   };
 
@@ -29,11 +31,12 @@ class Modal extends Component<HTMLDivElement> {
   }
 
   render() {
-    this.window.appendChild(button({ className: styles.modalClose, onClick: this.close }, img({ src: close })));
+    if (this.isClosable)
+      this.window.appendChild(button({ className: styles.modalClose, onClick: this.close }, img({ src: close })));
     this.appendChild(this.window);
     document.body.append(this.node);
   }
 }
 
-const modal = new Modal();
-export default modal;
+// const modal = new Modal();
+export default Modal;

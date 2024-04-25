@@ -19,29 +19,6 @@ import {
 import { onUsersLogin, onUsersLogout } from '@entities/user/api/all-users.api';
 import styles from './chat.module.css';
 
-declare global {
-  interface Document {
-    dispatchEvent(event: CustomEvent<SelectUserEvent>): boolean;
-    dispatchEvent(event: CustomEvent<EditMsgEvent>): boolean;
-    dispatchEvent(event: CustomEvent<UpdateUnreadEvent>): boolean;
-    addEventListener(
-      type: 'selectUser',
-      listener: (event: CustomEvent<SelectUserEvent>) => void,
-      options?: boolean | AddEventListenerOptions
-    ): void;
-    addEventListener(
-      type: 'editMessage',
-      listener: (event: CustomEvent<EditMsgEvent>) => void,
-      options?: boolean | AddEventListenerOptions
-    ): void;
-    addEventListener(
-      type: 'updateUnread',
-      listener: (event: CustomEvent<UpdateUnreadEvent>) => void,
-      options?: boolean | AddEventListenerOptions
-    ): void;
-  }
-}
-
 export default class Chat extends Component {
   private writeInput = textarea({
     className: styles.sendFormInput,
