@@ -2,6 +2,9 @@ import { EventEmitter, EventRecord } from '@shared/event-emitter';
 import ChatClient from '@shared/api/fun-chat-api';
 import { UserState, initialUserState } from '@/entities/user';
 
+export const LOCAL_URL = 'ws://localhost:4000 ';
+export const PROD_URL = 'wss://fun-chat-server.onrender.com';
+
 interface StoreEvents extends EventRecord {
   stateChange: AppStateSchema;
 }
@@ -30,7 +33,7 @@ class Store extends EventEmitter<StoreEvents> {
 }
 
 const initialState: AppStateSchema = {
-  socket: new ChatClient('ws://localhost:4000'),
+  socket: new ChatClient(LOCAL_URL),
   user: initialUserState,
 };
 export const store = new Store(initialState);

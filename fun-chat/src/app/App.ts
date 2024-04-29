@@ -6,7 +6,7 @@ import Loader from '@shared/ui/loader/loader';
 import Modal from '@shared/ui/modal/modal';
 import { AppRoutes, Router, getRouter } from './router';
 import { getAboutRoute } from './router/const';
-import { store } from './providers/store';
+import { LOCAL_URL, store } from './providers/store';
 import { SelectUserEvent, error, getStoredUserData } from '@/entities/user';
 
 interface ReconnectEvent {}
@@ -73,7 +73,7 @@ class App extends Component {
         div({ className: 'reconnect' }, error('Server is not available!', 'Try reconnecting...'), new Loader())
       );
       function reconnect() {
-        store.getState().socket = new ChatClient('ws://localhost:4000');
+        store.getState().socket = new ChatClient(LOCAL_URL);
 
         store.getState().socket.on('open', () => {
           modal.close();

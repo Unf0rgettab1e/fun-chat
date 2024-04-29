@@ -210,8 +210,6 @@ export default class Chat extends Component {
         this.deleteSeparator();
       }
       if (!this.messagesContainer.getNode().children.length) {
-        console.log(this.messagesContainer.getChildren());
-
         this.messagesContainer.appendChild(this.noMessages);
       }
       this.dispatchUnreadMessages();

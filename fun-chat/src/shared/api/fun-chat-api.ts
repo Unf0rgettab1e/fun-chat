@@ -72,11 +72,14 @@ type ChatClientEvents = EventRecord &
 class ChatClient extends EventEmitter<ChatClientEvents> {
   private socket: WebSocket;
 
+  private isOpen = false;
+
   constructor(url: string) {
     super();
     this.socket = new WebSocket(url);
 
     this.socket.addEventListener('open', () => {
+      this.isOpen = true;
       this.emit('open', null);
       this.socket.addEventListener('message', (event) => {
         const message: MessageResponse = JSON.parse(event.data);
@@ -94,6 +97,9 @@ class ChatClient extends EventEmitter<ChatClientEvents> {
   }
 
   sendMessage(message: object) {
+    if (!this.isOpen) {
+      return;
+    }
     this.socket.send(JSON.stringify(message));
   }
 
